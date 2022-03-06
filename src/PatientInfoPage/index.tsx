@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { apiBaseUrl } from '../constants';
-import { Patient } from '../types';
+import { Diagnosis, Entry, Patient } from '../types';
 import { setPatientInfo, useStateValue } from '../state';
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
@@ -28,6 +28,8 @@ const PatientInfoPage = () => {
     }
   }, []);
 
+  console.log(patient);
+
   return (
     <div>
       {Object.values(patient).map((patient: Patient) => (
@@ -44,6 +46,17 @@ const PatientInfoPage = () => {
           </div>
           <p style={{ fontSize: 18 }}>ssn: {patient.ssn}</p>
           <p style={{ fontSize: 18 }}>occupation: {patient.occupation}</p>
+          <h3>Entries</h3>
+          {patient.entries.map((entry: Entry) => (
+            <div key={entry.id}>
+              <span>{entry.date}</span> <span>{entry.description}</span>
+              {entry.diagnosisCodes?.map((diagnosisCode: Diagnosis['code']) => (
+                <ul key={diagnosisCode}>
+                  <li>{diagnosisCode}</li>
+                </ul>
+              ))}
+            </div>
+          ))}
         </div>
       ))}
     </div>
