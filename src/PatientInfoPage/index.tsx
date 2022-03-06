@@ -2,14 +2,15 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { apiBaseUrl } from '../constants';
-import { Diagnosis, Entry, Patient } from '../types';
+import { Diagnosis, Patient } from '../types';
 import { setDiagnoses, setPatientInfo, useStateValue } from '../state';
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
 import TransgenderIcon from '@mui/icons-material/Transgender';
+import PatientEntry from '../components/PatientEntry';
 
 const PatientInfoPage = () => {
-  const [{ patient, diagnoses }, dispatch] = useStateValue();
+  const [{ patient }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
@@ -57,23 +58,7 @@ const PatientInfoPage = () => {
           <p style={{ fontSize: 18 }}>ssn: {patient.ssn}</p>
           <p style={{ fontSize: 18 }}>occupation: {patient.occupation}</p>
           <h3>Entries</h3>
-          {patient.entries.map((entry: Entry) => (
-            <div key={entry.id}>
-              <span>{entry.date}</span> <span>{entry.description}</span>
-              {entry.diagnosisCodes?.map((diagnosisCode: Diagnosis['code']) => (
-                <ul key={diagnosisCode}>
-                  <li>
-                    {diagnosisCode}{' '}
-                    {
-                      Object.values(diagnoses).find(
-                        (diagnose) => diagnose.code === diagnosisCode
-                      )?.name
-                    }
-                  </li>
-                </ul>
-              ))}
-            </div>
-          ))}
+          <PatientEntry patient={patient} />
         </div>
       ))}
     </div>
