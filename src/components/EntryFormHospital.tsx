@@ -12,6 +12,7 @@ const EntryFormHospital = () => {
   const [type, setType] = useState('Hospital');
   const [dischargeDate, setDischargeDate] = useState('');
   const [dischargeCriteria, setDischargeCriteria] = useState('');
+  const [error, setError] = useState(null);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const submit = (e: any) => {
@@ -37,23 +38,30 @@ const EntryFormHospital = () => {
             `${apiBaseUrl}/patients/${id || ''}/entries`,
             newEntry
           );
-        } catch (e) {
-          console.error(e);
+          setDescription('');
+          setDate('');
+          setSpecialist('');
+          setType('Hospital');
+          setDischargeDate('');
+          setDischargeCriteria('');
+        } catch (error) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+          setError(error.response.data);
+          setTimeout(() => {
+            setError(null);
+          }, 5000);
         }
       };
       void sendEntry();
-      setDescription('');
-      setDate('');
-      setSpecialist('');
-      setType('Hospital');
-      setDischargeDate('');
-      setDischargeCriteria('');
     }
   };
+
+  console.log(error);
 
   return (
     <div>
       <h2>Add Entry</h2>
+      {error && <h3 style={{ color: 'red' }}>{error}</h3>}
       <form
         onSubmit={submit}
         style={{ display: 'flex', flexDirection: 'column' }}
