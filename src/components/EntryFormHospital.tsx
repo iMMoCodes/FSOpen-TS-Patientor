@@ -10,6 +10,7 @@ const EntryFormHospital = () => {
   const [date, setDate] = useState('');
   const [specialist, setSpecialist] = useState('');
   const [type, setType] = useState('Hospital');
+  const [healthCheck, setHealthCheck] = useState('Healthy');
   const [dischargeDate, setDischargeDate] = useState('');
   const [dischargeCriteria, setDischargeCriteria] = useState('');
   const [error, setError] = useState(null);
@@ -54,9 +55,37 @@ const EntryFormHospital = () => {
       };
       void sendEntry();
     }
+    if (type === 'HealthCheck') {
+      const newEntry = {
+        id,
+        description,
+        date,
+        specialist,
+        type,
+        healthCheckRating: healthCheck,
+      };
+      const sendEntry = async () => {
+        try {
+          await axios.post<Entry>(
+            `${apiBaseUrl}/patients/${id || ''}/entries`,
+            newEntry
+          );
+          setDescription('');
+          setDate('');
+          setSpecialist('');
+          setType('Hospital');
+          setHealthCheck('Healthy');
+        } catch (error) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+          setError(error.response.data);
+          setTimeout(() => {
+            setError(null);
+          }, 5000);
+        }
+      };
+      void sendEntry();
+    }
   };
-
-  console.log(error);
 
   return (
     <div>
@@ -122,6 +151,17 @@ const EntryFormHospital = () => {
               onChange={({ target }) => setDischargeCriteria(target.value)}
             />
           </label>
+        )}
+        {type === 'HealthCheck' && (
+          <select
+            onChange={({ target }) => setHealthCheck(target.value)}
+            style={{ marginBottom: 5, width: 250 }}
+          >
+            <option value='Healthy'>0</option>
+            <option value='LowRisk'>1</option>
+            <option value='HighRisk'>2</option>
+            <option value='CriticalRisk'>3</option>
+          </select>
         )}
         <input type='submit' value='Submit' style={{ width: 250 }} />
       </form>
