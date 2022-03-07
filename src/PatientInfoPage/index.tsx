@@ -8,6 +8,7 @@ import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
 import TransgenderIcon from '@mui/icons-material/Transgender';
 import PatientEntry from '../components/PatientEntry';
+import EntryFormHospital from '../components/EntryFormHospital';
 
 const PatientInfoPage = () => {
   const [{ patient }, dispatch] = useStateValue();
@@ -43,8 +44,8 @@ const PatientInfoPage = () => {
 
   return (
     <div>
-      {Object.values(patient).map((patient: Patient) => (
-        <div key={patient.id}>
+      {Object.values(patient).map((patient: Patient, i: number) => (
+        <div key={i}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <h2>{patient.name}</h2>
             {patient.gender === 'male' ? (
@@ -61,6 +62,7 @@ const PatientInfoPage = () => {
           <PatientEntry patient={patient} />
         </div>
       ))}
+      <EntryFormHospital />
     </div>
   );
 };

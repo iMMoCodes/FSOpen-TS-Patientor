@@ -15,18 +15,15 @@ const PatientEntry = (props: PatientProps) => {
   };
   return (
     <div>
-      {props.patient.entries.map((entry: Entry) => {
+      {props.patient.entries.map((entry: Entry, i: number) => {
         switch (entry.type) {
           case 'Hospital':
-            return <HospitalEntryComponent key={entry.id} entry={entry} />;
+            return <HospitalEntryComponent key={i} entry={entry} />;
           case 'HealthCheck':
-            return <HospitalCheckEntryComponent key={entry.id} entry={entry} />;
+            return <HospitalCheckEntryComponent key={i} entry={entry} />;
           case 'OccupationalHealthcare':
             return (
-              <OccupationalHealthcareEntryComponent
-                key={entry.id}
-                entry={entry}
-              />
+              <OccupationalHealthcareEntryComponent key={i} entry={entry} />
             );
           default:
             assertNever(entry);
