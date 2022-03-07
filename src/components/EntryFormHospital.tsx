@@ -13,6 +13,8 @@ const EntryFormHospital = () => {
   const [healthCheck, setHealthCheck] = useState('Healthy');
   const [dischargeDate, setDischargeDate] = useState('');
   const [dischargeCriteria, setDischargeCriteria] = useState('');
+  const [employerName, setEmployerName] = useState('');
+  const [sickLeave, setSickLeave] = useState('');
   const [error, setError] = useState(null);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -73,8 +75,40 @@ const EntryFormHospital = () => {
           setDescription('');
           setDate('');
           setSpecialist('');
-          setType('Hospital');
+          setType('HealthCheck');
           setHealthCheck('Healthy');
+        } catch (error) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+          setError(error.response.data);
+          setTimeout(() => {
+            setError(null);
+          }, 5000);
+        }
+      };
+      void sendEntry();
+    }
+    if (type === 'OccupationalHealthcare') {
+      const newEntry = {
+        id,
+        description,
+        date,
+        specialist,
+        type,
+        employerName,
+        sickLeave,
+      };
+      const sendEntry = async () => {
+        try {
+          await axios.post<Entry>(
+            `${apiBaseUrl}/patients/${id || ''}/entries`,
+            newEntry
+          );
+          setDescription('');
+          setDate('');
+          setSpecialist('');
+          setType('OccupationalHealthcare');
+          setEmployerName('');
+          setSickLeave('');
         } catch (error) {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           setError(error.response.data);
@@ -152,6 +186,28 @@ const EntryFormHospital = () => {
             />
           </label>
         )}
+        {type === 'OccupationalHealthcare' && (
+          <>
+            <label style={{ marginBottom: 5 }}>
+              Employer Name:
+              <input
+                type='text'
+                name='employerName'
+                value={employerName}
+                onChange={({ target }) => setEmployerName(target.value)}
+              />
+            </label>
+            <label style={{ marginBottom: 5 }}>
+              Sick leave:
+              <input
+                type='text'
+                name='sickLeave'
+                value={sickLeave}
+                onChange={({ target }) => setSickLeave(target.value)}
+              />
+            </label>
+          </>
+        )}
         {type === 'HealthCheck' && (
           <select
             onChange={({ target }) => setHealthCheck(target.value)}
@@ -163,6 +219,7 @@ const EntryFormHospital = () => {
             <option value='CriticalRisk'>3</option>
           </select>
         )}
+
         <input type='submit' value='Submit' style={{ width: 250 }} />
       </form>
     </div>
